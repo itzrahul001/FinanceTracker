@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Finance Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+
+        .card-gradient {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: #1f2937; /* Tailwind gray-800 for contrast */
+        }
+
+        .table-header {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+         .btn-gradient {
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #0072ff, #00c6ff);
+        }
+    </style>
+</head>
+
+<body style="background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);" class="bg-gray-100 font-sans">
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold text-center mb-4 text-white drop-shadow">Personal Finance Dashboard</h1>
+
+    <!-- Summary Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 max-w-4xl mx-auto">
+        <div class="card-gradient shadow-sm rounded-md p-4">
+            <h2 class="text-lg font-medium">Total Income: ₹<span th:text="${totalIncome}"></span></h2>
+            <h2 class="text-lg font-medium mt-1">Total Expense: ₹<span th:text="${totalExpense}"></span></h2>
+        </div>
+        <div class="bg-white shadow-sm rounded-md p-4">
+            <canvas id="financeChart" class="max-h-40"></canvas>
+        </div>
+    </div>
+
+    <!-- Transactions Section -->
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-2xl font-semibold mb-4">Transactions</h2>
+        <table class="min-w-full table-auto">
+            <thead>
+            <tr class="table-header">
+                <th class="px-4 py-2 text-left">Date</th>
+                <th class="px-4 py-2 text-left">Description</th>
+                <th class="px-4 py-2 text-left">Amount</th>
+                <th class="px-4 py-2 text-left">Type</th>
+                <th class="px-4 py-2 text-left">Category</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="txn : ${transaction}" class="border-b">
+                <td class="px-4 py-2" th:text="${txn.date}"></td>
+                <td class="px-4 py-2" th:text="${txn.description}"></td>
+                <td class="px-4 py-2" th:text="${txn.amount}"></td>
+                <td class="px-4 py-2" th:text="${txn.type}"></td>
+                <td class="px-4 py-2" th:text="${txn.category.name}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Button -->
+    <div class="mt-6 text-center">
+        <a href="/add" class="btn-gradient text-white px-4 py-2 rounded hover:shadow-md inline-block">Add New Transaction</a>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('financeChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Income', 'Expense'],
+            datasets: [{
+                data: [ [[${totalIncome}]], [[${totalExpense}]] ],
+                backgroundColor: ['#10B981', '#EF4444'],
+                hoverOffset: 6
+            }]
+        }
+    });
+</script>
+
+</body>
+</html>
